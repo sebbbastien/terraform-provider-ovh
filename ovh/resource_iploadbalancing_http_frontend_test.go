@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -68,7 +69,12 @@ func testSweepIploadbalancingHttpFrontend(region string) error {
 
 func TestAccIpLoadbalancingHttpFrontend_basic(t *testing.T) {
 	iplb := os.Getenv("OVH_IPLB_SERVICE_TEST")
-	ipfo := os.Getenv("OVH_IPLB_IPFO_TEST")
+
+	// adding external quotes back before unquoting
+	ipfo, err := strconv.Unquote("\"" + os.Getenv("OVH_IPLB_IPFO_TEST") + "\"")
+	if err != nil {
+		t.Fatalf("unable to unquote OVH_IPLB_IPFO_TEST: %s : %s", ipfo, err.Error())
+	}
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheckIpLoadbalancing(t) },
